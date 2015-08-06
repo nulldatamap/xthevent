@@ -52,13 +52,13 @@ struct Registration {
 }
 
 
-static DB_ADDR : &'static str = "postgres://postgres:valiantflamingroostercar@shiftdesign.me/xthtest";
+static DEFAULT_DB_ADDR : &'static str = "postgres://postgres@localhost/xth";
 
 static DEFAULT_PORT    : &'static str = "491";
 static DEFAULT_ADDRESS : &'static str = "localhost";
 
-fn init_database() {
-  let mut conn = Connection::connect( DB_ADDR, &SslMode::None).unwrap();
+fn init_database( dbaddr : &str ) {
+  let mut conn = Connection::connect( dbaddr, &SslMode::None).unwrap();
   conn.batch_execute( include_str!( "schema.sql" ) ).unwrap();
 }
 
@@ -84,6 +84,7 @@ fn get_options() -> Options {
 
   opts.optopt( "a", "address", "sets the server's address", "ADDR" );
   opts.optopt( "p", "port", "sets the server's port", "PORT" );
+  opts.optopt( "", "dbaddr", "sets the database's address", "ADDR" );
 
   opts
 }
@@ -105,11 +106,14 @@ fn main() {
     return
   }
 
+  let database_addrress = matches.opt_str( "dbaddr" )
+                                 .unwrap_or( DEFAULT_DB_ADDR.to_string() );
+
   if matches.opt_present( "initdb" ) {
 
     println!( "Initializing the database." );
 
-    init_database();
+    init_database( &database_addrress );
 
     println!( "Database initialized." );
   }
