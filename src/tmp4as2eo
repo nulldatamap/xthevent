@@ -1,0 +1,75 @@
+extern crate rustc_serialize as serialze;
+#[macro_use] extern crate nickel;
+extern crate postgres;
+extern crate crypto;
+extern crate time;
+
+use nickel::{Nickel, HttpRouter};
+use postgres::{Connection, SslMode};
+use t
+
+type Id = i32;
+
+struct Event {
+  id                  : Id,
+  tournament          : bool,
+  title               : String,
+  date_time           : (),
+  unconfirmed_players : Vec<Id>,
+  confirmed_players   : Vec<Id>,
+  active              : bool
+}
+
+struct User {
+  id         : Id,
+  steam_id   : String,
+  name       : String,
+  email      : String,
+  player_tag : Option<String>,
+  rank       : Option<String>
+}
+
+struct Account {
+  id            : Id,
+  password_hash : Vec<u8>,
+  password_salt : Vec<u8>,
+  email         : String,
+  session_token : Option<String>,
+  expiration    : ()
+}
+
+struct Registration {
+  token         : String,
+  steam_id      : String,
+  name          : String,
+  email         : String,
+  player_tag    : Option<String>,
+  rank          : Option<String>,
+  password_hash : Vec<u8>,
+  password_salt : Vec<u8>
+}
+
+
+static DB_ADDR : &'static str = "postgres://postgres:valiantflamingroostercar@shiftdesign.me/xthtest";
+
+fn setup_database( conn : &mut Connection ) {
+  conn.batch_execute( include_str!( "schema.sql" ) ).unwrap();
+}
+
+fn insert_user( conn : &mut Connection, user : User ) {
+  conn.execute( "INSERT INTO \"User\"
+                  (id, steam_id, name, email, player_tag, rank)
+                VALUES
+                  ($1, $2, $3, $4, $5, $6)"
+              , &[ &user.id, &user.steam_id, &user.name
+                 , &user.email, &user.player_tag, &user.rank ] ).unwrap();
+}
+
+fn main() {
+  let mut conn = Connection::connect( DB_ADDR, &SslMode::None).unwrap();
+  /*let mut server = Nickel::new();
+  
+  server.get("**", middleware!("Hello World"));
+  
+  server.listen("127.0.0.1:491");*/
+}

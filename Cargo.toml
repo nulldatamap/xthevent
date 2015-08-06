@@ -1,0 +1,14 @@
+[package]
+name = "xthevent"
+version = "0.1.0"
+authors = ["Nulldata <nulldatamap@gmail.com>"]
+
+[dependencies]
+nickel = "0.6"
+rustc-serialize = "0.3"
+postgres = "0.9"
+postgres_array = "0.5"
+rust-crypto = "0.2.31"
+smtp = "0.1.2"
+time = "0.1.32"
+getopts = "0.2.11"

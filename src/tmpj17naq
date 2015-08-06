@@ -1,0 +1,41 @@
+extern crate rustc_serialize as serialze;
+#[macro_use] extern crate nickel;
+extern crate postgres;
+extern crate crypto;
+
+use nickel::{Nickel, HttpRouter};
+use postgres::{Connection, SslMode};
+
+struct Event { 
+  id : String, 
+  tournament : bool,
+  title : String,
+  date : String,
+  time : String,
+  unconfirmed_players : Vec<User>,
+  confirmed_players : Vec<User>
+}
+
+struct User {
+  id : String,
+  steam_id : String,
+  name : String,
+  email : String,
+  player_tag : String,
+  rank : String
+}
+
+static DB_ADDR : &'static str = "postgres://postgres:valiantflamingroostercar@shiftdesign.me/xthtest";
+
+fn setup_database( conn : &mut Connection ) {
+  try!( con.execute_ba( include!( "src/schema.sql" ), &[] ) );
+}
+
+fn main() {
+  let conn = Connection::connect( DB_ADDR, &SslMode::None).unwrap();
+  /*let mut server = Nickel::new();
+  
+  server.get("**", middleware!("Hello World"));
+  
+  server.listen("127.0.0.1:491");*/
+}
